@@ -12,7 +12,7 @@ use std::time::Duration;
 /// Сэмплов в одной порции.
 const CHUNK: usize = 1024;
 /// Сколько звука держать готовым. Больше — дольше доходят правки эквалайзера.
-const AHEAD: Duration = Duration::from_millis(250);
+const AHEAD: Duration = Duration::from_millis(750);
 
 struct Shared {
     /// Растёт при каждой перемотке: порции со старым номером выбрасываются.

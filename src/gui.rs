@@ -2651,9 +2651,11 @@ pub fn run(start_hidden: bool) -> Result<(), slint::PlatformError> {
                 after_move();
                 EventResult::Propagate
             }
-            // Кадры, нарисованные до того, как окно показано и растянуто, теряются (i3 — #87,
-            // Windows под нагрузкой при открытии из трея — #194), а Slint дорисовывает только
-            // изменившееся: окно оставалось пустым кусками. Ждём, пока окно сменит размер или станет видно.
+            // Кадры, нарисованные до того, как окно показано и растянуто, теряются (i3 — #87),
+            // а Slint дорисовывает только изменившееся: окно оставалось пустым кусками.
+            // Ждём, пока окно сменит размер или станет видно (на Windows это вызывает лишние
+            // полные перерисовки на CPU при каждом открытии/сворачивании/смене фокуса).
+            #[cfg(target_os = "linux")]
             WindowEvent::Occluded(false) | WindowEvent::Focused(true) | WindowEvent::Resized(_) => {
                 Timer::single_shot(Duration::from_millis(150), || with_ctx(|c| full_repaint(&c.ui())));
                 EventResult::Propagate
